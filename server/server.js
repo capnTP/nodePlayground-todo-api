@@ -68,7 +68,8 @@ app.patch('/todos/:id', (req, res) => {
     return res.status(404).send({error: 'ID is not valid'});
 
   if (_.isBoolean(body.completed) && body.completed) {
-    body.completedAt = new Date().getTime();
+    let time = new Date().getTime();
+    body.completedAt = new Date(time).toString();
   } else {
     body.completed = false;
     body.completedAt = null;
@@ -77,7 +78,7 @@ app.patch('/todos/:id', (req, res) => {
   Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
     if (!todo) return res.status(404).send({error: 'ID not found'});
     res.send({todo});
-  }).catch((e) => res.status(400).send());
+  }).catch((e) => res.status(400).send(e));
 });
 
 app.listen(port, () => {

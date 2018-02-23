@@ -52,6 +52,23 @@ UserSchema.methods.generateAuthToken = (u) => {
   })
 };
 
+UserSchema.statics.findByToken = (model, token) => {
+  let User = model;
+  let decoded;
+
+  try {
+    decoded = jwt.verify(token, '9889xyz');
+  } catch (e) {
+    return Promise.reject('failed!');
+  }
+
+  return User.findOne({
+    '_id': decoded._id,
+    'tokens.token': token,
+    'tokens.access': 'auth'
+  });
+};
+
 let User = mongoose.model('UserRecord', UserSchema);
 
 module.exports.User = User;

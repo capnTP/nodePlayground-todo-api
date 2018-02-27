@@ -59,7 +59,7 @@ UserSchema.statics.findByToken = (model, token) => {
   try {
     decoded = jwt.verify(token, '9889xyz');
   } catch (e) {
-    return Promise.reject('failed!');
+    return Promise.reject('Unauthorized token...');
   }
 
   return User.findOne({

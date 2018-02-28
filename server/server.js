@@ -15,7 +15,7 @@ const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
-//todos
+//todos *************************************************
 app.post('/todos', (req, res) => {
   let todo = new Todo({
     text: req.body.text
@@ -85,7 +85,7 @@ app.patch('/todos/:id', (req, res) => {
   }).catch((e) => res.status(400).send(e));
 });
 
-//users
+//users ***************************************************
 app.post('/users', (req, res) => {
   let user = new User(_.pick(req.body, ['email', 'password']));
 

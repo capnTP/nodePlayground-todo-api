@@ -70,14 +70,27 @@ UserSchema.statics.findByToken = (model, token) => {
   });
 };
 
+UserSchema.statics.findByCredentials = function (email, password) {
+  let User = this;
+
+  return User.findOne({email}).then((user) => {
+    if (!user) return Promise.reject('Email is not found!');
+
+    return bcrypt.compare(password, user.password);
+  }).then((res) => {
+    return (res ? User.findOne({email}) :
+      Promise.reject('Authentication failed!'));
+  })
+};
+
 UserSchema.pre('save', function(next) {
   let user = this;
 
   if (user.isModified('password')) {
-    let hash = bcrypt.hashSync(user.password, 10);
-
-    user.password = hash;
-    next();
+      bcrypt.hash(user.password, 10, (err, hash) => {
+        user.password = hash;
+        next();
+      });
   } else {
     next();
   }

@@ -181,7 +181,7 @@ describe('GET /users/me', () => {
   it ('should return a 401 if not authenticate', (done) => {
     request(app)
       .get('/users/me')
-      //.set('x-auth', 'dwafaw')
+      // .set('x-auth', 'dwafaw')
       .expect(401)
       .expect((res) => {
         expect(res.body).toEqual({});
@@ -268,5 +268,35 @@ describe('POST /users/login' , () => {
           done();
         }).catch((e) => done(e));
       });
+  })
+});
+
+describe('DELETE /users/me/token', () => {
+  it ('should remove auth token on logout', (done) => {
+    request(app)
+      .delete('/users/me/token')
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+        User.findById(users[0]._id).then((user) => {
+          expect(user.tokens.length).toEqual(0);
+          done();
+        }).catch((e) => done(e));
+      });
+  })
+
+  it ('should reject request and return 401 if not authenticate', (done) => {
+    request(app)
+      .delete('/users/me/token')
+      .set('x-auth', users[0].tokens[0].token +'1')
+      .expect(401)
+      .end((err, res) => {
+        if (err) return done(err);
+        User.findById(users[0]._id).then((user) => {
+          expect(user.tokens.length).toEqual(1);
+          done();
+        }).catch((e) => done(e));
+      })
   })
 });

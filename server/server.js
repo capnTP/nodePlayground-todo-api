@@ -78,8 +78,8 @@ app.patch('/todos/:id', authenticate, (req, res) => {
       let time = new Date().getTime();
       body.completedAt = new Date(time).toLocaleString();
     } else {
-      let offset = -new Date().getTimezoneOffset()/60;
-      let time = new Date().getTime()+offset;
+      let offset = req.timeoffset || -new Date().getTimezoneOffset()/60;
+      let time = new Date().getTime() + parseInt(offset);
       body.completedAt = new Date(time).toLocaleString();
     }
   } else {

@@ -78,7 +78,7 @@ app.patch('/todos/:id', authenticate, (req, res) => {
       let time = new Date().getTime();
       body.completedAt = new Date(time).toLocaleString();
     } else {
-      let offset = req.timeoffset || -new Date().getTimezoneOffset()/60;
+      let offset = req.header('timeoffset') || -new Date().getTimezoneOffset()/60;
       let time = new Date().getTime() + (3600000 * parseInt(offset));
       body.completedAt = new Date(time).toLocaleString();
     }

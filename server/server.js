@@ -74,8 +74,14 @@ app.patch('/todos/:id', authenticate, (req, res) => {
     return res.status(404).send({error: 'ID is not valid'});
 
   if (_.isBoolean(body.completed) && body.completed) {
-    let time = new Date().getTime();
-    body.completedAt = new Date(time).toString();
+    if (process.env.TIMEOFFSET) {
+      let time = new Date().getTime();
+      body.completedAt = new Date(time).toLocaleString();
+    } else {
+      let offset = -new Date().getTimezoneOffset()/60;
+      let time = new Date().getTime()+offset;
+      body.completedAt = new Date(time).toLocaleString();
+    }
   } else {
     body.completed = false;
     body.completedAt = null;

@@ -1,6 +1,7 @@
 let env = process.env.NODE_ENV || 'development';
 
 if (env === 'development' || env === 'test') {
+  process.env.TIMEOFFSET = 0;
   let config = require('./config.json');
   let envConfig = config[env];
 

@@ -180,7 +180,7 @@ describe('PATCH /todos/:id', () => {
       })
       .expect(200)
       .expect((res) => {
-          expect(res.body.todo.completedAt).toBeTruthy();
+          expect(typeof res.body.todo.completedAt).toBe('string');
           expect(res.body.todo.completed).toBeTruthy();
           expect(res.body.todo.text).toBe(text);
       })
@@ -300,7 +300,10 @@ describe('POST /users/login' , () => {
       .end((err, res) => {
         if (err) return done(err);
         User.findById(users[1]._id).then((user) => {
-          expect(user.tokens[1].token).toBe(res.header['x-auth']);
+          expect(user.toObject().tokens[1]).toMatchObject({
+            access: 'auth',
+            token: res.header['x-auth']
+          });
           done();
         }).catch((e) => done(e));
       });
